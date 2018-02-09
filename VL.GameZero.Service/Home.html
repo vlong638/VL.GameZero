@@ -13,6 +13,7 @@
         <h2>Search by ID</h2>
         <input type="text" id="prodId" size="5" />
         <input type="button" value="Search" onclick="find();" />
+        <input type="button" value="CreateAccount" onclick="CreateAccount();" />
         <p id="product" />
     </div>
 
@@ -22,7 +23,7 @@
 
     $(document).ready(function () {
       // Send an AJAX request
-      $.getJSON(uri)
+        $.getJSON(uri + '/GetAllProducts')
           .done(function (data) {
             // On success, 'data' contains a list of products.
             $.each(data, function (key, item) {
@@ -38,13 +39,22 @@
 
     function find() {
       var id = $('#prodId').val();
-      $.getJSON(uri + '/' + id)
+        $.getJSON(uri + '/GetProduct/' + id)
           .done(function (data) {
             $('#product').text(formatItem(data));
           })
           .fail(function (jqXHR, textStatus, err) {
             $('#product').text('Error: ' + err);
           });
+    }
+
+    function CreateAccount() {
+        $.ajax({
+            type: "post",
+            url: 'api/Account/CreateAccount',
+            data: { "AccountName": "vlong638","Password":"701616" },
+            success: function (data, status) { }
+        });
     }
     </script>
 </body>

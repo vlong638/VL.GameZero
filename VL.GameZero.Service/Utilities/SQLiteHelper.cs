@@ -42,6 +42,7 @@ namespace VL.GameZero.Service.Utilities
             {
                 if (!IsTableExist(key))
                 {
+                    DropTables(key);
                     CreateTables(key);
                 }
             }
@@ -49,7 +50,7 @@ namespace VL.GameZero.Service.Utilities
         static Dictionary<string, string> TableCreateSQLs = new Dictionary<string, string>()
         {
             { "TAccount",$@"create table TAccount (
-   UId                  numeric(32)          identity,
+   UId                  varchar(36)          ,
    AccountName          varchar(20)          not null,
    Password             varchar(128)         not null,
    CreatedOn            datetime             not null,
@@ -57,7 +58,7 @@ namespace VL.GameZero.Service.Utilities
 );
             "},
             { "TPlayer",$@"create table TPlayer (
-   UId                  numeric(32)          identity,
+   UId                  varchar(36)          ,
    SlotIndex            numeric(2)           not null,
    PlayerName           varchar(20)          not null,
    CreatedOn            datetime             not null,
@@ -91,6 +92,17 @@ namespace VL.GameZero.Service.Utilities
                 connection.Open();
                 var command = connection.CreateCommand();
                 command.CommandText = createSQL;
+                command.ExecuteNonQuery();
+                connection.Close();
+            }
+        }
+        static void DropTables(string key)
+        {
+            using (var connection = Connect())
+            {
+                connection.Open();
+                var command = connection.CreateCommand();
+                command.CommandText = "drop table " + key;
                 command.ExecuteNonQuery();
                 connection.Close();
             }
